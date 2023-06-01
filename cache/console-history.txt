@@ -1,0 +1,2 @@
+const [owner] = await ethers.getSigners();
+const hre = require("hardhat");

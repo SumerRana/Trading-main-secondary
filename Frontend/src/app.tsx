@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./app.css";
 import { Web3ModalContext } from "./contexts/Web3ModalProvider";
 import { BlockchainContext } from "./contexts/BlockchainProvider";
@@ -30,11 +30,20 @@ interface Offer {
   time: string; // Time field
 }
 
+const tokenAmounts = {};
+
 const App: React.FC = () => {
   // Accessing the Web3ModalContext
   const { web3, account, connect, disconnect, signer, chainId } = React.useContext(
     Web3ModalContext
   );
+
+  //allowance status
+  const [clayAllowance, setClayAllowance] = useState("");
+  const [fishAllowance, setFishAllowance] = useState("");
+  const [rockAllowance, setRockAllowance] = useState("");
+  const [woodAllowance, setWoodAllowance] = useState("");
+  const [woolAllowance, setWoolAllowance] = useState("");
 
   // State for tokens offered and tokens wanted
   const [tokensOffered, setTokensOffered] = useState([
@@ -45,13 +54,59 @@ const App: React.FC = () => {
   ]);
 
 
-// add the blockchain context 
+  // add the blockchain context 
   const {
-    tradeOffer: tradeOfferWrapper,
+    woodInTheBlockchainLand: WoodInTheBlockchainLandWrapper,
+    rockInTheBlockchainLand: RockInTheBlockchainLandWrapper,
+    CLAYInTheBlockchainLand: CLAYInTheBlockchainLandWrapper,
+    woolInTheBlockchainLand: WoolInTheBlockchainLandWrapper,
+    fishInTheBlockchainLand: FishInTheBlockchainLandWrapper,
+    tradeOffer: tradeOfferWrapper
+
   } = React.useContext(BlockchainContext);
 
   // State for open offers
   const [openOffers, setOpenOffers] = useState<Offer[]>([]);
+
+  const getWoodAllowance = async () => {
+    if (web3 && account && chainId && tokenAmounts[0] > 0) {
+      const _woodAllowance = await WoodInTheBlockchainLandWrapper?.allowance();
+      setWoodAllowance(String(Number(_woodAllowance) / 10 ** 18) || "0");
+    }
+  }
+  const getRockAllowance = async () => {
+    if (web3 && account && chainId && tokenAmounts[1] > 0) {
+      const _rockAllowance = await RockInTheBlockchainLandWrapper?.allowance();
+      setRockAllowance(String(Number(_rockAllowance) / 10 ** 18) || "0");
+    }
+  }
+  const getClayAllowance = async () => {
+    if (web3 && account && chainId && tokenAmounts[2] > 0) {
+      const _clayAllowance = await CLAYInTheBlockchainLandWrapper?.allowance();
+      setClayAllowance(String(Number(_clayAllowance) / 10 ** 18) || "0");
+    }
+  }
+  const getWoolAllowance = async () => {
+    if (web3 && account && chainId && tokenAmounts[3] > 0) {
+      const _woolAllowance = await WoolInTheBlockchainLandWrapper?.allowance();
+      setWoolAllowance(String(Number(_woolAllowance) / 10 ** 18) || "0");
+    }
+  }
+  const getFishAllowance = async () => {
+    if (web3 && account && chainId && tokenAmounts[4] > 0) {
+      const _fishAllowance = await FishInTheBlockchainLandWrapper?.allowance();
+      setFishAllowance(String(Number(_fishAllowance) / 10 ** 18) || "0");
+    }
+  }
+  
+
+  useEffect(() => {
+    getWoodAllowance();
+    getRockAllowance();
+    getClayAllowance();
+    getWoolAllowance();
+    getFishAllowance();
+  });
 
   // Function to add a new token to the tokensOffered state
   const handleAddTokenOffered = () => {
@@ -102,66 +157,66 @@ const App: React.FC = () => {
     }
 
     // Create an array to store the ordered tokens
-  const tokensOfferedData = Array(5).fill(null);
+    const tokensOfferedData = Array(5).fill(null);
 
-  for (let i = 0; i < tokensOffered.length; i++) {
-    if (tokensOffered[i].token === "WOOD") {
-      tokensOfferedData[0] = tokensOffered[i];
-    } else if (tokensOffered[i].token === "ROCK") {
-      tokensOfferedData[1] = tokensOffered[i];
-    } else if (tokensOffered[i].token === "CLAY") {
-      tokensOfferedData[2] = tokensOffered[i];
-    } else if (tokensOffered[i].token === "WOOL") {
-      tokensOfferedData[3] = tokensOffered[i];
-    } else if (tokensOffered[i].token === "FISH") {
-      tokensOfferedData[4] = tokensOffered[i];
+    for (let i = 0; i < tokensOffered.length; i++) {
+      if (tokensOffered[i].token === "WOOD") {
+        tokensOfferedData[0] = tokensOffered[i];
+      } else if (tokensOffered[i].token === "ROCK") {
+        tokensOfferedData[1] = tokensOffered[i];
+      } else if (tokensOffered[i].token === "CLAY") {
+        tokensOfferedData[2] = tokensOffered[i];
+      } else if (tokensOffered[i].token === "WOOL") {
+        tokensOfferedData[3] = tokensOffered[i];
+      } else if (tokensOffered[i].token === "FISH") {
+        tokensOfferedData[4] = tokensOffered[i];
+      }
     }
-  }
 
-  // Set amount to 0 for empty tokens in tokensOfferedData
-  for (let i = 0; i < tokensOfferedData.length; i++) {
-    if (tokensOfferedData[i] === null) {
-      tokensOfferedData[i] = { id: i + 1, token: "", amount: 0 };
+    // Set amount to 0 for empty tokens in tokensOfferedData
+    for (let i = 0; i < tokensOfferedData.length; i++) {
+      if (tokensOfferedData[i] === null) {
+        tokensOfferedData[i] = { id: i + 1, token: "", amount: 0 };
+      }
     }
-  }
 
-   // Create an array to store the wanted tokens
-   const tokensWantedData = Array(5).fill(null);
+    // Create an array to store the wanted tokens
+    const tokensWantedData = Array(5).fill(null);
 
-   for (let i = 0; i < tokensWanted.length; i++) {
-     if (tokensWanted[i].token === "WOOD") {
-       tokensWantedData[0] = tokensWanted[i];
-     } else if (tokensWanted[i].token === "ROCK") {
-       tokensWantedData[1] = tokensWanted[i];
-     } else if (tokensWanted[i].token === "CLAY") {
-       tokensWantedData[2] = tokensWanted[i];
-     } else if (tokensWanted[i].token === "WOOL") {
-       tokensWantedData[3] = tokensWanted[i];
-     } else if (tokensWanted[i].token === "FISH") {
-       tokensWantedData[4] = tokensWanted[i];
-     }
-   }
- 
-   // Set amount to 0 for empty tokens in tokensWantedData
-   for (let i = 0; i < tokensWantedData.length; i++) {
-     if (tokensWantedData[i] === null) {
-       tokensWantedData[i] = { id: i + 1, token: "", amount: 0 };
-     }
-   }
+    for (let i = 0; i < tokensWanted.length; i++) {
+      if (tokensWanted[i].token === "WOOD") {
+        tokensWantedData[0] = tokensWanted[i];
+      } else if (tokensWanted[i].token === "ROCK") {
+        tokensWantedData[1] = tokensWanted[i];
+      } else if (tokensWanted[i].token === "CLAY") {
+        tokensWantedData[2] = tokensWanted[i];
+      } else if (tokensWanted[i].token === "WOOL") {
+        tokensWantedData[3] = tokensWanted[i];
+      } else if (tokensWanted[i].token === "FISH") {
+        tokensWantedData[4] = tokensWanted[i];
+      }
+    }
 
-  const tokenAmounts: number[] = [];
+    // Set amount to 0 for empty tokens in tokensWantedData
+    for (let i = 0; i < tokensWantedData.length; i++) {
+      if (tokensWantedData[i] === null) {
+        tokensWantedData[i] = { id: i + 1, token: "", amount: 0 };
+      }
+    }
 
-  for (let i = 0; i < tokensOfferedData.length; i++) {
-    const { amount } = tokensOfferedData[i];
-    tokenAmounts.push(amount);
-  }
+    const tokenAmounts: number[] = [];
 
-  for (let i = 0; i < tokensWantedData.length; i++) {
-    const { amount } = tokensWantedData[i];
-    tokenAmounts.push(amount);
-  }
+    for (let i = 0; i < tokensOfferedData.length; i++) {
+      const { amount } = tokensOfferedData[i];
+      tokenAmounts.push(amount);
+    }
 
-  const tokenAmountsTuple = tokenAmounts as [number, number, number, number, number, number, number, number, number, number];
+    for (let i = 0; i < tokensWantedData.length; i++) {
+      const { amount } = tokensWantedData[i];
+      tokenAmounts.push(amount);
+    }
+
+    const tokenAmountsTuple = tokenAmounts as [number, number, number, number, number, number, number, number, number, number];
 
     if (web3 && account && chainId) {
       tradeOfferWrapper
@@ -208,6 +263,54 @@ const App: React.FC = () => {
   const handleDisconnectWallet = useCallback(() => {
     disconnect();
   }, [disconnect]);
+
+  const handleApprove = () => {
+    if (web3 && account && chainId) {
+
+      if (tokenAmounts[0] > 0) {
+        WoodInTheBlockchainLandWrapper
+          ?.approve()
+          .then(() => {
+            alert(" Wood Approved!");
+          })
+      }
+
+      if (tokenAmounts[1] > 0) {
+        RockInTheBlockchainLandWrapper
+          ?.approve()
+          .then(() => {
+            alert(" Rock Approved!");
+          })
+      }
+
+      if (tokenAmounts[2] > 0) {
+        CLAYInTheBlockchainLandWrapper
+          ?.approve()
+          .then(() => {
+            alert(" Clay Approved!");
+          })
+      }
+
+      if (tokenAmounts[3] > 0) {
+        WoolInTheBlockchainLandWrapper
+          ?.approve()
+          .then(() => {
+            alert(" Wool Approved!");
+          })
+      }
+
+
+      if (tokenAmounts[4] > 0) {
+        FishInTheBlockchainLandWrapper
+          ?.approve()
+          .then(() => {
+            alert(" Fish Approved!");
+          })
+      }
+      window.location.reload();
+
+    }
+  };
 
   // Function to initiate the trade
   const initiateTrade = useCallback(
@@ -315,9 +418,26 @@ const App: React.FC = () => {
       <button onClick={handleAddTokenWanted}>Add Another</button>
 
       {/* Create Offer button */}
-      <button id="create-offer" onClick={handleSubmit}>
+      {/* <button id="create-offer" onClick={handleSubmit}>
         CREATE OFFER TO TRADE
-      </button>
+      </button> */}
+
+      {(clayAllowance === "0" &&
+      fishAllowance === "0" &&
+      rockAllowance === "0" &&
+      woodAllowance === "0" &&
+      woolAllowance === "0" )? (
+        <button id="create-offer" onClick={handleApprove}>
+          APPROVE TOKEN TRANSFER
+        </button>
+      ) : (
+        <button id="create-offer" onClick={handleSubmit}>
+          CREATE OFFER TO TRADE
+        </button>
+      )}
+
+
+
 
       {/* Open Offers */}
       <div className="open-offers">

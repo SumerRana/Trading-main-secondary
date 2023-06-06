@@ -4,7 +4,7 @@ export const FaucetAddress = {
   },
 };
 
-export const CLAYTokenAddress = {
+export const ClayTokenAddress = {
   Contract: {
     51: "0xb41E3ce9A37643d7B4a67f62126468F1C6F70364",
   },

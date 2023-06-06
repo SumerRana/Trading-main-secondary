@@ -58,7 +58,7 @@ const App: React.FC = () => {
   const {
     woodInTheBlockchainLand: WoodInTheBlockchainLandWrapper,
     rockInTheBlockchainLand: RockInTheBlockchainLandWrapper,
-    CLAYInTheBlockchainLand: CLAYInTheBlockchainLandWrapper,
+    clayInTheBlockchainLand: ClayInTheBlockchainLandWrapper,
     woolInTheBlockchainLand: WoolInTheBlockchainLandWrapper,
     fishInTheBlockchainLand: FishInTheBlockchainLandWrapper,
     tradeOffer: tradeOfferWrapper
@@ -82,7 +82,7 @@ const App: React.FC = () => {
   }
   const getClayAllowance = async () => {
     if (web3 && account && chainId && tokenAmounts[2] > 0) {
-      const _clayAllowance = await CLAYInTheBlockchainLandWrapper?.allowance();
+      const _clayAllowance = await ClayInTheBlockchainLandWrapper?.allowance();
       setClayAllowance(String(Number(_clayAllowance) / 10 ** 18) || "0");
     }
   }
@@ -284,7 +284,7 @@ const App: React.FC = () => {
       }
 
       if (tokenAmounts[2] > 0) {
-        CLAYInTheBlockchainLandWrapper
+        ClayInTheBlockchainLandWrapper
           ?.approve()
           .then(() => {
             alert(" Clay Approved!");

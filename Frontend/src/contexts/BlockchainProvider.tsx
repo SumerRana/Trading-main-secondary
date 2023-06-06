@@ -7,6 +7,7 @@ import TokenSwapWrapper from "../blockchain/TokenSwapWrapper";
 import WoodInTheBlockchainLandWrapper from "../blockchain/WoodInTheBlockchainLandWrapper";
 import WoodTokenWrapper from "../blockchain/WoodTokenWrapper";
 import WoolInTheBlockchainLandWrapper from "../blockchain/WoolInTheBlockchainLandWrapper";
+import ClayInTheBlockchainLandWrapper from "../blockchain/ClayInTheBlockchainLandWrapper";
 import tradeOfferWrapper from "../blockchain/tradeOfferWrapper"; // Import tradeOfferWrapper
 
 interface IBlockchainContext {
@@ -17,6 +18,7 @@ interface IBlockchainContext {
   woodInTheBlockchainLand: WoodInTheBlockchainLandWrapper | null;
   woodToken: WoodTokenWrapper | null;
   woolInTheBlockchainLand: WoolInTheBlockchainLandWrapper | null;
+  clayInTheBlockchainLand: ClayInTheBlockchainLandWrapper | null;
   tradeOffer: tradeOfferWrapper | null; // Add tradeOfferWrapper
 }
 
@@ -28,6 +30,7 @@ export const BlockchainContext = createContext<IBlockchainContext>({
   woodInTheBlockchainLand: null,
   woodToken: null,
   woolInTheBlockchainLand: null,
+  clayInTheBlockchainLand: null,
   tradeOffer: null, // Add tradeOfferWrapper
 });
 
@@ -44,6 +47,8 @@ export const BlockchainProvider = ({ children }) => {
   const [woodToken, setWoodToken] = useState<WoodTokenWrapper | null>(null);
   const [woolInTheBlockchainLand, setWoolInTheBlockchainLand] =
     useState<WoolInTheBlockchainLandWrapper | null>(null);
+  const [clayInTheBlockchainLand, setClayInTheBlockchainLand] =
+    useState<ClayInTheBlockchainLandWrapper | null>(null);
   const [tradeOffer, setTradeOffer] = useState<tradeOfferWrapper | null>(null); // Add tradeOfferWrapper
 
   useEffect(() => {
@@ -98,6 +103,7 @@ export const BlockchainProvider = ({ children }) => {
         woodInTheBlockchainLand,
         woodToken,
         woolInTheBlockchainLand,
+        clayInTheBlockchainLand,
         tradeOffer, // Add tradeOfferWrapper
       }}
     >

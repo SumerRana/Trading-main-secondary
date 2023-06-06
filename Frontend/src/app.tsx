@@ -98,7 +98,7 @@ const App: React.FC = () => {
       setFishAllowance(String(Number(_fishAllowance) / 10 ** 18) || "0");
     }
   }
-  
+
 
   useEffect(() => {
     getWoodAllowance();
@@ -106,18 +106,24 @@ const App: React.FC = () => {
     getClayAllowance();
     getWoolAllowance();
     getFishAllowance();
+    console.log("effect calling and getting");
+
   });
 
   // Function to add a new token to the tokensOffered state
   const handleAddTokenOffered = () => {
-    const newToken = { id: tokensOffered.length + 1, token: "", amount: 0 };
-    setTokensOffered([...tokensOffered, newToken]);
+    if (tokensOffered?.length <= 5) {
+      const newToken = { id: tokensOffered.length + 1, token: "", amount: 0 };
+      setTokensOffered([...tokensOffered, newToken]);
+    }
   };
 
   // Function to add a new token to the tokensWanted state
   const handleAddTokenWanted = () => {
-    const newToken = { id: tokensWanted.length + 1, token: "", amount: 0 };
-    setTokensWanted([...tokensWanted, newToken]);
+    if (tokensWanted?.length < 5) {
+      const newToken = { id: tokensWanted.length + 1, token: "", amount: 0 };
+      setTokensWanted([...tokensWanted, newToken]);
+    }
   };
 
   // Function to handle changes in the tokensOffered state
@@ -347,6 +353,17 @@ const App: React.FC = () => {
     [openOffers, signer]
   );
 
+  // useEffect(() => {
+  //   console.log({
+  //     clayAllowance,
+  //     fishAllowance,
+  //     rockAllowance,
+  //     woodAllowance,
+  //     woolAllowance,
+  //   });
+
+  // })
+
   return (
     <main className="main">
       <div className="button-container">
@@ -360,7 +377,7 @@ const App: React.FC = () => {
       {/* Tokens Offered */}
       {tokensOffered.map((token) => (
         <div key={token.id} className="token-wrapper">
-          <h3>Amount</h3>
+          <h3 >Amount</h3>
           <input
             type="number"
             value={token.amount}
@@ -423,10 +440,10 @@ const App: React.FC = () => {
       </button> */}
 
       {(clayAllowance === "0" &&
-      fishAllowance === "0" &&
-      rockAllowance === "0" &&
-      woodAllowance === "0" &&
-      woolAllowance === "0" )? (
+        fishAllowance === "0" &&
+        rockAllowance === "0" &&
+        woodAllowance === "0" &&
+        woolAllowance === "0") ? (
         <button id="create-offer" onClick={handleApprove}>
           APPROVE TOKEN TRANSFER
         </button>
